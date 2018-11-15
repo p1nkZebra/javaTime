@@ -1,11 +1,13 @@
 package com.javaPeople.logic.service;
 
+import com.javaPeople.controller.dto.CircleResourceDto;
 import com.javaPeople.domain.CircleResource;
 import com.javaPeople.repository.CircleResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,4 +27,19 @@ public class ResourceService {
     }
 
     public void editResource(@NotNull CircleResource resource) {resourceRepository.save(resource);}
+
+    public List<CircleResourceDto> countContributionsByResource(){
+
+        List<CircleResourceDto> resultDto = new ArrayList<>();
+        List<CircleResource> allResources = resourceRepository.findAll();
+        for (CircleResource resource : allResources) {
+            Long count = resourceRepository.countContributionsByResource(resource.getId());
+            resultDto.add(CircleResourceDto.builder()
+                    .name(resource.getName())
+                    .value(count)
+                    .build());
+
+        }
+        return resultDto;
+    }
 }

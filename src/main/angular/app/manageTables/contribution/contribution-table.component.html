@@ -4,6 +4,161 @@
     </div>
 
     <div class="col-lg-6">
+        <clr-datagrid [(clrDgSelected)]="selectedContributions">
+            <clr-dg-action-bar>
+                <div class="btn-group">
+                    <button *ngIf="selectedContributions.length == 0"
+                            type="button"
+                            class="btn btn-sm btn-secondary"
+                            (click)="onAdd()">
+                        <clr-icon shape="plus"></clr-icon>
+                        Add
+                    </button>
 
+                    <button *ngIf="selectedContributions.length > 0"
+                            type="button"
+                            class="btn btn-sm btn-secondary"
+                            (click)="onDelete()">
+                        <clr-icon shape="close"></clr-icon>
+                        Delete
+                    </button>
+                    <button *ngIf="selectedContributions.length == 1"
+                            type="button"
+                            class="btn btn-sm btn-secondary"
+                            (click)="doEdit()">
+                        <clr-icon shape="close"></clr-icon>
+                        Edit
+                    </button>
+                </div>
+            </clr-dg-action-bar>
+
+            <clr-dg-column>Contribution ID</clr-dg-column>
+            <clr-dg-column>Name</clr-dg-column>
+            <clr-dg-column>Factor</clr-dg-column>
+            <clr-dg-column>Resource Id</clr-dg-column>
+
+            <clr-dg-row *clrDgItems="let resource of allContributions" [clrDgItem]="contribution">
+                <clr-dg-cell>{{contribution.id}}</clr-dg-cell>
+                <clr-dg-cell>{{contribution.name}}</clr-dg-cell>
+                clr-dg-cell>{{contribution.factor}}</clr-dg-cell>
+                <clr-dg-cell>{{contribution.resourceId}}</clr-dg-cell>
+            </clr-dg-row>
+
+            <clr-dg-footer>{{allContributions.length}} contributions</clr-dg-footer>
+        </clr-datagrid>
     </div>
+</div>
+
+
+<div class="modal" *ngIf="doOpenAddContributionModal">
+    <div class="modal-dialog" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" type="button">
+                    <clr-icon aria-hidden="true" shape="close"></clr-icon>
+                </button>
+                <h3 class="modal-title">Add new Contribution</h3>
+            </div>
+            <div class="modal-body">
+                <form clrForm [formGroup]="resourceInputFormGroup">
+                    <clr-input-container>
+                        <label>Contribution name</label>
+                        <input clrInput placeholder=""
+                               name="contributionName"
+                               [formControl]="contributionNameInputFormControl"
+                               [formControlName]="'contributionNameInputFormControlName'"
+                        />
+                        <clr-input-container>
+                            <label>Contribution factor</label>
+                            <input clrInput placeholder=""
+                                   name="contributionFactor"
+                                   [formControl]="contributionFactorInputFormControl"
+                                   [formControlName]="'contributionFactorInputFormControlName'"
+                            />
+                    </clr-input-container>
+                    <clr-input-container>
+                        <label>Resource id</label>
+                        <input clrInput placeholder=""
+                               name="contributionComment"
+                               [formControl]="contributionResourceIdInputFormControl"
+                               [formControlName]="'contributionResourceIdInputFormControlName'"
+                        />
+                    </clr-input-container>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline"
+                        (click)="closeModal()">Cancel
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        (click)="saveNewContribution()">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="doOpenAddContributionModal"
+     class="modal-backdrop"
+     aria-hidden="true">
+
+</div>
+
+
+
+<div class="modal" *ngIf="doOpenEditContributionModal">
+    <div class="modal-dialog" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" type="button">
+                    <clr-icon aria-hidden="true" shape="close"></clr-icon>
+                </button>
+                <h3 class="modal-title">Edit Contribution</h3>
+            </div>
+            <div class="modal-body">
+                <form clrForm [formGroup]="contributionEditInputFormGroup">
+                    <clr-input-container>
+                        <label>Contribution name</label>
+                        <input clrInput placeholder=""
+                               name="contributionName"
+                               [formControl]="contributionEditNameInputFormControl"
+                               [formControlName]="'contributionEditNameInputFormControlName'"
+                        />
+                    </clr-input-container>
+                    <clr-input-container>
+                        <label>Contribution factor</label>
+                        <input clrInput placeholder=""
+                               name="contributionFactor"
+                               [formControl]="contributionEditFactorInputFormControl"
+                               [formControlName]="'contributionEditFactorInputFormControlName'"
+                        />
+                    </clr-input-container>
+                    <clr-input-container>
+                        <label>Resource id</label>
+                        <input clrInput placeholder=""
+                               name="contributionEditResourceId"
+                               [formControl]="contributionEditResourceIdInputFormControl"
+                               [formControlName]="'contributionEditResourceIdInputFormControlName'"
+                        />
+                    </clr-input-container>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline"
+                        (click)="closeModal()">Cancel
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        (click)="editContribution()">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="doOpenEditContributionModal"
+     class="modal-backdrop"
+     aria-hidden="true">
+
 </div>
