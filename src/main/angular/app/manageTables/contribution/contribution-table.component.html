@@ -37,10 +37,10 @@
             <clr-dg-column>Factor</clr-dg-column>
             <clr-dg-column>Resource Id</clr-dg-column>
 
-            <clr-dg-row *clrDgItems="let resource of allContributions" [clrDgItem]="contribution">
+            <clr-dg-row *clrDgItems="let contribution of allContributions" [clrDgItem]="contribution">
                 <clr-dg-cell>{{contribution.id}}</clr-dg-cell>
                 <clr-dg-cell>{{contribution.name}}</clr-dg-cell>
-                clr-dg-cell>{{contribution.factor}}</clr-dg-cell>
+                <clr-dg-cell>{{contribution.factor}}</clr-dg-cell>
                 <clr-dg-cell>{{contribution.resourceId}}</clr-dg-cell>
             </clr-dg-row>
 
@@ -60,7 +60,7 @@
                 <h3 class="modal-title">Add new Contribution</h3>
             </div>
             <div class="modal-body">
-                <form clrForm [formGroup]="resourceInputFormGroup">
+                <form clrForm [formGroup]="contributionInputFormGroup">
                     <clr-input-container>
                         <label>Contribution name</label>
                         <input clrInput placeholder=""
@@ -68,6 +68,7 @@
                                [formControl]="contributionNameInputFormControl"
                                [formControlName]="'contributionNameInputFormControlName'"
                         />
+                    </clr-input-container>
                         <clr-input-container>
                             <label>Contribution factor</label>
                             <input clrInput placeholder=""
@@ -75,11 +76,11 @@
                                    [formControl]="contributionFactorInputFormControl"
                                    [formControlName]="'contributionFactorInputFormControlName'"
                             />
-                    </clr-input-container>
+                        </clr-input-container>
                     <clr-input-container>
                         <label>Resource id</label>
                         <input clrInput placeholder=""
-                               name="contributionComment"
+                               name="resourceId"
                                [formControl]="contributionResourceIdInputFormControl"
                                [formControlName]="'contributionResourceIdInputFormControlName'"
                         />

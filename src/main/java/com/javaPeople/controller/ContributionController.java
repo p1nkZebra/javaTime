@@ -66,5 +66,26 @@ public class ContributionController {
             throw new RuntimeException(e);
         }
     }
+    @ResponseBody
+    @PostMapping(value = "edit-contribution")
+    public String editContribution(@RequestBody String json) {
+        log.info("Start edit Contribution from json: {}.", json);
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Contribution contribution = mapper.readValue(json, new TypeReference<Contribution>() {
+
+            });
+
+            log.info("edit Contribution to save: {}", contribution);
+            contributionService.editContribution(contribution);
+
+            return "OK";
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 }
