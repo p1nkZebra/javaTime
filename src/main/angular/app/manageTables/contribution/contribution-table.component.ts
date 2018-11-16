@@ -47,7 +47,7 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
     ) {
         this.contributionInputFormGroup = this.builder.group({
             contributionNameInputFormControlName: this.contributionNameInputFormControl,
-            contributionFactorInputFormControlName: this.contributionFactorInputFormControl,
+                contributionFactorInputFormControlName: this.contributionFactorInputFormControl,
             contributionResourceIdInputFormControlName: this.contributionResourceIdInputFormControl,
         } as ContributionInputs);
         this.contributionEditInputFormGroup=this.builder.group({
@@ -152,6 +152,7 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
         contribution.name = contributionName;
         contribution.factor = contributionFactor;
         contribution.resourceId = contributionResourceId;
+
 
         this.httpService.editContribution(contribution)
             .pipe(

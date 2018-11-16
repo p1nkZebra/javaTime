@@ -57,7 +57,7 @@ public class ContributionController {
             });
 
             log.info("New Contribution to save: {}", contribution);
-            contributionService.saveNewContribution(contribution);
+            contributionService.saveOrEditContribution(contribution);
 
             return "OK";
 
@@ -78,7 +78,7 @@ public class ContributionController {
             });
 
             log.info("edit Contribution to save: {}", contribution);
-            contributionService.editContribution(contribution);
+            contributionService.saveOrEditContribution(contribution);
 
             return "OK";
 
