@@ -5,6 +5,7 @@ import {Observable} from "rxjs/Rx";
 import {classToPlain, plainToClass} from "class-transformer";
 import {ContributionView} from "@app/model/view/contributionView";
 import {RawContribution} from "@app/model/tables/rawContribution";
+import {RawResource} from "@app/model/tables/rawResource";
 
 
 @Injectable()
@@ -12,8 +13,6 @@ export class ContributionService {
 
     constructor(private http: HttpClient) {
     }
-
-    
 
     getContributionView(): Observable<ContributionView[]> {
         return this.http.get<ContributionView[]>("java-people/get-contribution-view")
@@ -32,7 +31,6 @@ export class ContributionService {
     }
 
 
-
     addNewContribution(contribution: RawContribution) {
         return this.http.post("java-people/save-new-contribution", classToPlain(contribution));
     }
@@ -41,4 +39,8 @@ export class ContributionService {
         return this.http.post("java-people/edit-contribution", classToPlain(contribution));
 
     }
+
+    // loadResourceName(){
+    //     return this.http.get<RawResource.name[]>()
+    // }
 }
