@@ -2,8 +2,9 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {map} from "rxjs/internal/operators";
 import {Observable} from "rxjs/Rx";
-import {plainToClass} from "class-transformer";
+import {classToPlain, plainToClass} from "class-transformer";
 import {ContributionView} from "@app/model/view/contributionView";
+import {RawContribution} from "@app/model/tables/rawContribution";
 
 
 @Injectable()
@@ -20,5 +21,24 @@ export class ContributionService {
                 map(response => plainToClass(ContributionView, response as Object[])
                 )
             );
+    }
+
+    getContributionTable() {
+        return this.http.get<RawContribution[]>("java-people/get-contribution-table" )
+            .pipe(
+                map(response => plainToClass(RawContribution, response as Object[])
+                )
+            );
+    }
+
+
+
+    addNewContribution(contribution: RawContribution) {
+        return this.http.post("java-people/save-new-contribution", classToPlain(contribution));
+    }
+
+    editContribution(contribution: RawContribution) {
+        return this.http.post("java-people/edit-contribution", classToPlain(contribution));
+
     }
 }
