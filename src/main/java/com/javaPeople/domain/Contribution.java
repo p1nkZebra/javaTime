@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data // пропись в коде геттеров и сеттеров
@@ -42,7 +43,7 @@ public class Contribution {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contribution")
-    private List<Event> events = null;
+    private List<Event> events = new ArrayList<>();
 
 
 }

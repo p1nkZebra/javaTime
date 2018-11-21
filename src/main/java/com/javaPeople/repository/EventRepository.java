@@ -12,9 +12,8 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    @Transactional
     @Query(value = "SELECT * FROM resource_circle.Event e WHERE e.contribution_id = ?", nativeQuery = true)
-    List<Event> findByContributionId(Long contribution);
+    List<Event> findByContributionId(Long contributionId);
 
 //    List<Event> findByContribution(Contribution contribution);
 
@@ -25,4 +24,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Modifying
     @Query(value = "DELETE  FROM Event e WHERE e.id in :ids")
     void deleteByIds(@Param("ids") List<Long> ids);
+
+    @Query(value = "SELECT count(u) FROM Event u WHERE u.contribution = :contribution")
+    int findEventCountByContribution(@Param("contribution") Contribution contribution);
+
 }

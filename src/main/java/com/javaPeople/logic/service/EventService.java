@@ -1,7 +1,8 @@
 package com.javaPeople.logic.service;
 
+import com.javaPeople.controller.dto.EventViewDto;
 import com.javaPeople.controller.dto.RawEventDto;
-import com.javaPeople.controller.dto.RawEventDtoConverter;
+import com.javaPeople.controller.dto.converter.EventDtoConverter;
 import com.javaPeople.domain.Event;
 import com.javaPeople.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
     @Autowired
-    private RawEventDtoConverter converter;
+    private EventDtoConverter converter;
 
 
     public List<RawEventDto> findEventsByContributionId(@NotNull Long contributionId) {
@@ -33,7 +34,7 @@ public class EventService {
     }
 
 
-    public List<RawEventDto> findAllEvents() {
+    public List<RawEventDto> getAllRawEventDto() {
         List<RawEventDto> resultList = new ArrayList<>();
 
         List<Event> eventList = eventRepository.findAll();
@@ -43,7 +44,6 @@ public class EventService {
         }
 
         return resultList;
-
     }
 
     public void deleteEvents(List<RawEventDto> eventDtoList) {
@@ -60,5 +60,17 @@ public class EventService {
 
         eventRepository.deleteByIds(ids);
 
+    }
+
+    @NotNull
+    public List<EventViewDto> getAllEventViewDtos() {
+        List<EventViewDto> resultList = new ArrayList<>();
+
+        List<Event> eventList = eventRepository.findAll();
+        for ( Event event : eventList ) {
+            resultList.add(converter.convertEventToEventViewDto(event));
+        }
+
+        return resultList;
     }
 }

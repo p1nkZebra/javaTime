@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -35,7 +36,7 @@ public class CircleResource {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "resource")
-    private List<Contribution> contributions = null;
+    private List<Contribution> contributions = new ArrayList<>();
 
 }
 

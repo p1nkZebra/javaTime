@@ -3,6 +3,7 @@ package com.javaPeople.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javaPeople.controller.dto.EventViewDto;
 import com.javaPeople.controller.dto.RawEventDto;
 import com.javaPeople.logic.service.EventService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,13 +46,32 @@ public class EventController {
         }
     }
 
+    @ResponseBody
+    @GetMapping(value = "get-event-view")
+    public String getEventViews() {
+        log.info("Start get-event-view.");
+
+        List<EventViewDto> eventViewDtos = eventService.getAllEventViewDtos();
+
+        EventViewDto[] eventViewDtosArray = eventViewDtos.toArray(new EventViewDto[0]);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(eventViewDtosArray);
+            log.info("URL \"get-event-view\" return json: {}", jsonString);
+            return jsonString;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @ResponseBody
     @GetMapping(value = "get-all-events")
     public String getAllEvents() {
         log.info("Start get all events.");
 
-        List<RawEventDto> records = eventService.findAllEvents();
+        List<RawEventDto> records = eventService.getAllRawEventDto();
 
         try {
             ObjectMapper mapper = new ObjectMapper();

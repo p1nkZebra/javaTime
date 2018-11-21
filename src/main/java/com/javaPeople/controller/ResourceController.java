@@ -3,6 +3,7 @@ package com.javaPeople.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javaPeople.controller.dto.ResourceViewDto;
 import com.javaPeople.domain.CircleResource;
 import com.javaPeople.logic.service.ResourceService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,25 @@ public class ResourceController {
 
             return jsonString;
 
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @ResponseBody
+    @GetMapping(value = "get-resource-view")
+    public String getEventViews() {
+        log.info("Start get-resource-view.");
+
+        List<ResourceViewDto> resourceViewDtos = resourceService.getAllResourceViewDtos();
+
+        ResourceViewDto[] resourceViewDtosArray = resourceViewDtos.toArray(new ResourceViewDto[0]);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(resourceViewDtosArray);
+            log.info("URL \"get-resource-view\" return json: {}", jsonString);
+            return jsonString;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

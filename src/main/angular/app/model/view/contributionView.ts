@@ -1,10 +1,13 @@
 
 export class ContributionView {
     id: number;
+
     resourceId: number;
     resourceName: string;
+
     name: string;
-    factor: string;
+    factor: number;
+
     eventCount: number;
 
 }

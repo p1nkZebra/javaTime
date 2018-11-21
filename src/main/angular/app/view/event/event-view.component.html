@@ -5,11 +5,11 @@
 
     <div class="col-lg-6">
         <clr-datagrid >
-            <clr-dg-column>Resource Name</clr-dg-column>
-            <clr-dg-column>Contribution Name</clr-dg-column>
-            <clr-dg-column>Event Name</clr-dg-column>
-            <clr-dg-column>Event date</clr-dg-column>
-            <clr-dg-column>Comment</clr-dg-column>
+            <clr-dg-column>Ресурс</clr-dg-column>
+            <clr-dg-column>Сфера</clr-dg-column>
+            <clr-dg-column>Событие</clr-dg-column>
+            <clr-dg-column>Дата события</clr-dg-column>
+            <clr-dg-column>Комментарий</clr-dg-column>
 
             <clr-dg-row *clrDgItems="let event of allEventView">
                 <clr-dg-cell>{{event.resourceName}}</clr-dg-cell>

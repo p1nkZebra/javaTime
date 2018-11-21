@@ -4,6 +4,7 @@ package com.javaPeople.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javaPeople.controller.dto.ContributionViewDto;
 import com.javaPeople.domain.Contribution;
 import com.javaPeople.logic.service.ContributionService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,25 @@ public class ContributionController {
 
             return jsonString;
 
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @ResponseBody
+    @GetMapping(value = "get-contribution-view")
+    public String getEventViews() {
+        log.info("Start get-contribution-view.");
+
+        List<ContributionViewDto> contributionViewDtos = contributionService.getAllContributionViewDtos();
+
+        ContributionViewDto[] eventViewDtosArray = contributionViewDtos.toArray(new ContributionViewDto[0]);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(eventViewDtosArray);
+            log.info("URL \"get-contribution-view\" return json: {}", jsonString);
+            return jsonString;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

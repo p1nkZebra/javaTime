@@ -15,7 +15,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
     
 
 
-    constructor(private httpService: EventService) {
+    constructor(private eventHttpService: EventService) {
     }
 
     ngOnDestroy(): void {
@@ -27,7 +27,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
     
 
     updateTable() {
-        this.httpService.getEventView()
+        this.eventHttpService.getEventView()
             .pipe(
                 tap(() => {
                     // do something before all actions

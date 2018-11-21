@@ -24,7 +24,7 @@ public class Event {
     @Column(name = "event_id" , nullable = false , unique = true)
     private Long id;
 
-    @Getter(onMethod =  @_(@NonNull))
+    @Getter(onMethod =  @__(@NonNull))
     @Column(name = "name")
     private String name;
 
@@ -33,6 +33,10 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "contribution_id", referencedColumnName = "id", nullable = false)
     private Contribution contribution;
+
+    @Getter(onMethod = @__(@NotNull))
+    @Column(name = "contribution_id", insertable = false, updatable = false)
+    private Long contributionId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Getter(onMethod = @__(@NotNull))
