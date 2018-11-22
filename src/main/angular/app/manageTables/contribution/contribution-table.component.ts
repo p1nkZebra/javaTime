@@ -8,15 +8,10 @@ import {RawResource} from "@app/model/tables/rawResource";
 import {ResourceService} from "@app/service/resource.service";
 
 
-export interface ContributionInputs extends Dictionary<AbstractControl> {
+export interface ContributionFields extends Dictionary<AbstractControl> {
     resourceNameFcn: AbstractControl,
     nameFcn: AbstractControl,
     factorFcn: AbstractControl,
-}
-export interface ContributionEdits extends Dictionary<AbstractControl> {
-    contributionEditNameInputFormControlName: AbstractControl,
-    contributionEditFactorInputFormControlName: AbstractControl,
-    contributionEditResourceInputFormControlName: AbstractControl,
 }
 
 @Component({
@@ -32,51 +27,39 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
 
     resourceList: RawResource[] = [];
 
-    doOpenAddContributionModal: boolean = false;
-    doOpenEditContributionModal: boolean = false;
+    doOpenContributionModal: boolean = false;
+    modalTitle: string;
 
+    ADD_NEW: string = "Add new Contribution";
+    EDIT: string = "Edit Contribution";
 
-    inputFields: FormGroup;
+    fieldsFormGroup: FormGroup;
     resourceNameFc: FormControl = new FormControl();
     nameFc: FormControl = new FormControl();
     factorFc: FormControl = new FormControl();
 
-    editFields : FormGroup;
-    contributionEditNameInputFormControl: FormControl = new FormControl();
-    contributionEditFactorInputFormControl: FormControl = new FormControl();
-    contributionEditResourceInputFormControl: FormControl = new FormControl();
 
-    countryForm: FormGroup;
-    countries = ['USA', 'Canada', 'Uk'];
-
-    constructor(private httpService: ContributionService,
-                private httpServiceResource: ResourceService,
+    constructor(private contributionHttpService: ContributionService,
+                private resourceHttpService: ResourceService,
                 private builder: FormBuilder
     ) {
-        this.inputFields = this.builder.group({
+        this.fieldsFormGroup = this.builder.group({
             nameFcn: this.nameFc,
             factorFcn: this.factorFc,
             resourceNameFcn: this.resourceNameFc,
-        } as ContributionInputs);
-        this.editFields=this.builder.group({
-            contributionEditNameInputFormControlName: this.contributionEditNameInputFormControl,
-            contributionEditFactorInputFormControlName: this.contributionEditFactorInputFormControl,
-            contributionEditResourceInputFormControlName: this.contributionEditResourceInputFormControl,
-        }as ContributionEdits)
+        } as ContributionFields);
     }
 
     ngOnInit() {
         this.updateTable();
         this.loadResources();
-
-        this.countryForm = this.builder.group({countryControl: [this.countries[1]]});
     }
 
     ngOnDestroy() {
     }
 
     updateTable() {
-        this.httpService.getContributionTable()
+        this.contributionHttpService.getContributionTable()
             .pipe(
                 tap(() => {
                     // do something before all actions
@@ -94,26 +77,43 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
     }
 
     onAdd() {
-        console.log("open modal window");
-        this.doOpenAddContributionModal = true;
-
+        console.log("open modal");
+        this.doOpenContributionModal = true;
+        this.modalTitle = this.ADD_NEW;
     }
 
+    doEdit() {
+        console.log("open modal");
+        this.doOpenContributionModal = true;
+        this.modalTitle = this.EDIT;
 
-    saveNewContribution() {
-        console.log("saveNewContribution");
-        let inputs = this.inputFields.controls as ContributionInputs;
+        let editSelectedRow = this.selectedContributions[0];
+        let name = editSelectedRow.name;
+        let factor = editSelectedRow.factor;
+        let resource = this.resourceList.find(item => item.id === editSelectedRow.resourceId);
+
+        let inputs = this.fieldsFormGroup.controls as ContributionFields;
+        inputs.nameFcn.setValue(name);
+        inputs.factorFcn.setValue(factor);
+        inputs.resourceNameFcn.setValue(resource);
+    }
+
+    doSave() {
+        console.log("save");
+        let inputs = this.fieldsFormGroup.controls as ContributionFields;
 
         let contributionName: string = inputs.nameFcn.value;
         let contributionFactor: number = inputs.factorFcn.value;
         let resource: RawResource = inputs.resourceNameFcn.value;
 
-        let contribution: RawContribution = new RawContribution();
+
+        let selectedRows = this.selectedContributions;
+        let contribution: RawContribution = selectedRows.length == 0 ? new RawContribution() : selectedRows[0];
         contribution.name = contributionName;
         contribution.factor = contributionFactor;
         contribution.resourceId = resource.id;
 
-        this.httpService.addNewContribution(contribution)
+        this.contributionHttpService.addContribution(contribution)
             .pipe(
                 tap(() => {
                     // do something before all actions
@@ -125,69 +125,21 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
                 })
             ).subscribe();
     }
-
-
-
 
     closeModal() {
         console.log("close modal");
 
-        this.doOpenAddContributionModal = false;
-        this.inputFields.reset();
-
-        this.doOpenEditContributionModal = false;
-        this.editFields.reset();
-    }
-
-
-    editContribution() {
-        console.log("editContribution");
-
-        let inputs = this.editFields.controls as ContributionEdits;
-        let contributionName: string = inputs.contributionEditNameInputFormControlName.value;
-        let contributionFactor: number = inputs.contributionEditFactorInputFormControlName.value;
-        let resource: RawResource = inputs.contributionEditResourceInputFormControlName.value;
-
-        console.log("before",this.selectedContributions[0]);
-
-        let contribution: RawContribution =this.selectedContributions[0];
-        contribution.name = contributionName;
-        contribution.factor = contributionFactor;
-        contribution.resourceId = resource.id;
-
-
-        this.httpService.editContribution(contribution)
-            .pipe(
-                tap(() => {
-                    // do something before all actions
-                }),
-                finalize(() => {
-                    // do something after all actions
-                    this.closeModal();
-                    this.updateTable();
-                })
-            ).subscribe();
-
-
-    }
-
-    doEdit() {
-        this.doOpenEditContributionModal = true;
-        let editSelectedRow=this.selectedContributions[0];
-
-        let inputs = this.editFields.controls as ContributionEdits;
-
-        inputs.contributionEditNameInputFormControlName.setValue(editSelectedRow.name);
-        inputs.contributionEditFactorInputFormControlName.setValue(editSelectedRow.factor);
-        inputs.contributionEditResourceInputFormControlName.setValue(editSelectedRow.resourceId);
+        this.doOpenContributionModal = false;
+        this.fieldsFormGroup.reset();
     }
 
     onDelete() {
         console.log("onDelete");
     }
+
 //загружаем все ресурсы
-    loadResources(){
-        this.httpServiceResource.getResourceTable()
+    loadResources() {
+        this.resourceHttpService.getResourceTable()
             .pipe(
                 tap(() => {
                     // do something before all actions

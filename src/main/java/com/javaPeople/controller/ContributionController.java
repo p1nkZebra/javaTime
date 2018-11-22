@@ -66,38 +66,14 @@ public class ContributionController {
 
 
     @ResponseBody
-    @PostMapping(value = "save-new-contribution")
+    @PostMapping(value = "save-contribution")
     public String saveContribution(@RequestBody String json) {
-        log.info("Start save new Contribution from json: {}.", json);
+        log.info("Start save or edit Contribution from json: {}.", json);
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Contribution contribution = mapper.readValue(json, new TypeReference<Contribution>() {
+            Contribution contribution = mapper.readValue(json, new TypeReference<Contribution>() {});
 
-            });
-
-            log.info("New Contribution to save: {}", contribution);
-            contributionService.saveOrEditContribution(contribution);
-
-            return "OK";
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-    @ResponseBody
-    @PostMapping(value = "edit-contribution")
-    public String editContribution(@RequestBody String json) {
-        log.info("Start edit Contribution from json: {}.", json);
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            Contribution contribution = mapper.readValue(json, new TypeReference<Contribution>() {
-
-            });
-
-            log.info("edit Contribution to save: {}", contribution);
             contributionService.saveOrEditContribution(contribution);
 
             return "OK";

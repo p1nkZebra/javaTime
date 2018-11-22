@@ -1,11 +1,6 @@
 <div class="row">
     <div class="col-lg-6">
-        <!--<form [formGroup]="countryForm">-->
-        <!--<select formControlName="countryControl">-->
-        <!--&lt;!&ndash;<option [value]="country" *ngFor="let country of countries"> {{country}}</option>&ndash;&gt;-->
-        <!--<option [ngValue]="country" *ngFor="let country of countries">{{country.name}}</option>-->
-        <!--</select>-->
-        <!--</form>-->
+
     </div>
 
     <div class="col-lg-6">
@@ -31,7 +26,7 @@
                             type="button"
                             class="btn btn-sm btn-secondary"
                             (click)="doEdit()">
-                        <clr-icon shape="close"></clr-icon>
+                        <clr-icon shape="pencil"></clr-icon>
                         Edit
                     </button>
                 </div>
@@ -55,22 +50,21 @@
 </div>
 
 
-<div class="modal" *ngIf="doOpenAddContributionModal">
+<div class="modal" *ngIf="doOpenContributionModal">
     <div class="modal-dialog" role="dialog" aria-hidden="true">
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-label="Close" class="close" type="button">
                     <clr-icon aria-hidden="true" shape="close"></clr-icon>
                 </button>
-                <h3 class="modal-title">Add new Contribution</h3>
+                <h3 class="modal-title">{{modalTitle}}</h3>
             </div>
             <div class="modal-body">
-                <form clrForm [formGroup]="inputFields">
+                <form clrForm [formGroup]="fieldsFormGroup">
                     <clr-select-container>
                         <label>Resource name</label>
                         <select clrSelect required
                                 name="resourceName"
-                                placeholder="Выберите ресурс"
                                 formControlName="resourceNameFcn">
                             <option [ngValue]="res" *ngFor="let res of resourceList">{{res.name}}</option>
                         </select>
@@ -79,18 +73,20 @@
 
                     <clr-input-container>
                         <label>Contribution name</label>
-                        <input clrInput
+                        <input clrInput required
                                placeholder=""
-                               name="contributionName"
+                               name="name"
                                formControlName="nameFcn"/>
+                        <clr-control-error>This field is required!</clr-control-error>
                     </clr-input-container>
 
                     <clr-input-container>
                         <label>Contribution factor</label>
-                        <input clrInput
+                        <input clrInput required
                                placeholder=""
-                               name="contributionFactor"
+                               name="factor"
                                formControlName="factorFcn"/>
+                        <clr-control-error>This field is required!</clr-control-error>
                     </clr-input-container>
 
                 </form>
@@ -103,64 +99,13 @@
 
                 <button type="button"
                         class="btn btn-primary"
-                        (click)="saveNewContribution()">Ok
+                        (click)="doSave()">Save
                 </button>
             </div>
         </div>
     </div>
 </div>
-<div *ngIf="doOpenAddContributionModal"
-     class="modal-backdrop"
-     aria-hidden="true">
-
-</div>
-
-
-<div class="modal" *ngIf="doOpenEditContributionModal">
-    <div class="modal-dialog" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button aria-label="Close" class="close" type="button">
-                    <clr-icon aria-hidden="true" shape="close"></clr-icon>
-                </button>
-                <h3 class="modal-title">Edit Contribution</h3>
-            </div>
-            <div class="modal-body">
-                <form clrForm [formGroup]="editFields">
-                    <clr-input-container>
-                        <label>Contribution name</label>
-                        <input clrInput placeholder=""
-                               name="contributionName"
-                               [formControlName]="'contributionEditNameInputFormControlName'"
-                        />
-                    </clr-input-container>
-                    <clr-input-container>
-                        <label>Contribution factor</label>
-                        <input clrInput placeholder=""
-                               name="contributionFactor"
-                               [formControlName]="'contributionEditFactorInputFormControlName'"
-                        />
-                    </clr-input-container>
-                    <select [formControlName]="'contributionEditResourceInputFormControlName'">
-                        <option [ngValue]="resource" *ngFor="let resource of resources">{{resource.name}}</option>
-                    </select>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button"
-                        class="btn btn-outline"
-                        (click)="closeModal()">Cancel
-                </button>
-
-                <button type="button"
-                        class="btn btn-primary"
-                        (click)="editContribution()">Edit
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<div *ngIf="doOpenEditContributionModal"
+<div *ngIf="doOpenContributionModal"
      class="modal-backdrop"
      aria-hidden="true">
 
