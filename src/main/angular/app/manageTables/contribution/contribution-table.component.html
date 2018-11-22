@@ -1,11 +1,11 @@
 <div class="row">
     <div class="col-lg-6">
-        <form [formGroup]="countryForm">
-            <select formControlName="countryControl">
-                <!--<option [value]="country" *ngFor="let country of countries"> {{country}}</option>-->
-                <option [ngValue]="country" *ngFor="let country of countries">{{country.name}}</option>
-            </select>
-        </form>
+        <!--<form [formGroup]="countryForm">-->
+        <!--<select formControlName="countryControl">-->
+        <!--&lt;!&ndash;<option [value]="country" *ngFor="let country of countries"> {{country}}</option>&ndash;&gt;-->
+        <!--<option [ngValue]="country" *ngFor="let country of countries">{{country.name}}</option>-->
+        <!--</select>-->
+        <!--</form>-->
     </div>
 
     <div class="col-lg-6">
@@ -65,24 +65,34 @@
                 <h3 class="modal-title">Add new Contribution</h3>
             </div>
             <div class="modal-body">
-                <form clrForm [formGroup]="contributionInputFormGroup">
+                <form clrForm [formGroup]="inputFields">
+                    <clr-select-container>
+                        <label>Resource name</label>
+                        <select clrSelect required
+                                name="resourceName"
+                                placeholder="Выберите ресурс"
+                                formControlName="resourceNameFcn">
+                            <option [ngValue]="res" *ngFor="let res of resourceList">{{res.name}}</option>
+                        </select>
+                        <clr-control-error>This field is required!</clr-control-error>
+                    </clr-select-container>
+
                     <clr-input-container>
                         <label>Contribution name</label>
-                        <input clrInput placeholder=""
+                        <input clrInput
+                               placeholder=""
                                name="contributionName"
-                               [formControlName]="'contributionNameInputFormControlName'"
-                        />
+                               formControlName="nameFcn"/>
                     </clr-input-container>
+
                     <clr-input-container>
                         <label>Contribution factor</label>
-                        <input clrInput placeholder=""
+                        <input clrInput
+                               placeholder=""
                                name="contributionFactor"
-                               [formControlName]="'contributionFactorInputFormControlName'"
-                        />
+                               formControlName="factorFcn"/>
                     </clr-input-container>
-                    <select [formControlName]="'contributionResourceInputFormControlName'">
-                        <option [ngValue]="resource" *ngFor="let resource of allResources">{{resource.name}}</option>
-                    </select>
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -116,7 +126,7 @@
                 <h3 class="modal-title">Edit Contribution</h3>
             </div>
             <div class="modal-body">
-                <form clrForm [formGroup]="contributionEditInputFormGroup">
+                <form clrForm [formGroup]="editFields">
                     <clr-input-container>
                         <label>Contribution name</label>
                         <input clrInput placeholder=""
@@ -132,7 +142,7 @@
                         />
                     </clr-input-container>
                     <select [formControlName]="'contributionEditResourceInputFormControlName'">
-                        <option [ngValue]="resource" *ngFor="let resource of allResources">{{resource.name}}</option>
+                        <option [ngValue]="resource" *ngFor="let resource of resources">{{resource.name}}</option>
                     </select>
                 </form>
             </div>

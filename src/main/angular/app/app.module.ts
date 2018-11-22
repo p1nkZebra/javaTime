@@ -3,13 +3,12 @@ import {BrowserModule} from "@angular/platform-browser";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgModule} from "@angular/core";
 import {HttpClientModule} from "@angular/common/http";
-import {ClarityModule, ClrInputModule} from "@clr/angular";
+import {ClarityModule, ClrFormsNextModule, ClrInputModule, ClrSelectModule} from "@clr/angular";
 import {AppComponent} from './app.component';
 import {ROUTING} from "./app.routing";
 
 import {registerLocaleData} from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
-import {MainComponent} from "./main/main.component";
 import {ResourceViewComponent} from "@app/view/resourse/resource-view.component";
 import {EventViewComponent} from "@app/view/event/event-view.component";
 import {ResourceTableComponent} from "@app/manageTables/resource/resource-table.component";
@@ -22,7 +21,6 @@ registerLocaleData(localeRu);
 @NgModule({
     declarations: [
         AppComponent,
-        MainComponent,
 
         ResourceViewComponent,
         ContributionViewComponent,
@@ -47,6 +45,8 @@ registerLocaleData(localeRu);
         HttpClientModule,
         ClarityModule,
         ClrInputModule,
+        ClrSelectModule,
+        ClrFormsNextModule,
         ROUTING
     ],
     providers: [

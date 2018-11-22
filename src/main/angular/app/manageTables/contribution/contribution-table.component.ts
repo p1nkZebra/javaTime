@@ -9,9 +9,9 @@ import {ResourceService} from "@app/service/resource.service";
 
 
 export interface ContributionInputs extends Dictionary<AbstractControl> {
-    contributionNameInputFormControlName: AbstractControl,
-    contributionFactorInputFormControlName: AbstractControl,
-    contributionResourceInputFormControlName: AbstractControl,
+    resourceNameFcn: AbstractControl,
+    nameFcn: AbstractControl,
+    factorFcn: AbstractControl,
 }
 export interface ContributionEdits extends Dictionary<AbstractControl> {
     contributionEditNameInputFormControlName: AbstractControl,
@@ -30,18 +30,18 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
     allContributions: RawContribution[] = [];
     selectedContributions: RawContribution[] = [];
 
-    allResources: RawResource[] = [];
+    resourceList: RawResource[] = [];
 
     doOpenAddContributionModal: boolean = false;
     doOpenEditContributionModal: boolean = false;
 
 
-    contributionInputFormGroup: FormGroup;
-    contributionNameInputFormControl: FormControl = new FormControl();
-    contributionFactorInputFormControl: FormControl = new FormControl();
-    contributionResourceInputFormControl: FormControl = new FormControl();
+    inputFields: FormGroup;
+    resourceNameFc: FormControl = new FormControl();
+    nameFc: FormControl = new FormControl();
+    factorFc: FormControl = new FormControl();
 
-    contributionEditInputFormGroup : FormGroup;
+    editFields : FormGroup;
     contributionEditNameInputFormControl: FormControl = new FormControl();
     contributionEditFactorInputFormControl: FormControl = new FormControl();
     contributionEditResourceInputFormControl: FormControl = new FormControl();
@@ -53,12 +53,12 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
                 private httpServiceResource: ResourceService,
                 private builder: FormBuilder
     ) {
-        this.contributionInputFormGroup = this.builder.group({
-            contributionNameInputFormControlName: this.contributionNameInputFormControl,
-            contributionFactorInputFormControlName: this.contributionFactorInputFormControl,
-            contributionResourceInputFormControlName: this.contributionResourceInputFormControl,
+        this.inputFields = this.builder.group({
+            nameFcn: this.nameFc,
+            factorFcn: this.factorFc,
+            resourceNameFcn: this.resourceNameFc,
         } as ContributionInputs);
-        this.contributionEditInputFormGroup=this.builder.group({
+        this.editFields=this.builder.group({
             contributionEditNameInputFormControlName: this.contributionEditNameInputFormControl,
             contributionEditFactorInputFormControlName: this.contributionEditFactorInputFormControl,
             contributionEditResourceInputFormControlName: this.contributionEditResourceInputFormControl,
@@ -102,17 +102,11 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
 
     saveNewContribution() {
         console.log("saveNewContribution");
+        let inputs = this.inputFields.controls as ContributionInputs;
 
-        let inputs = this.contributionInputFormGroup.controls as ContributionInputs;
-
-        let contributionName: string = inputs.contributionNameInputFormControlName.value;
-        let contributionFactor: number = inputs.contributionFactorInputFormControlName.value;
-        let resource: RawResource = inputs.contributionResourceInputFormControlName.value;
-
-        if (contributionName.trim().length == 0) {
-            console.log("ERROR: empty value for contributionName");
-            return;
-        }
+        let contributionName: string = inputs.nameFcn.value;
+        let contributionFactor: number = inputs.factorFcn.value;
+        let resource: RawResource = inputs.resourceNameFcn.value;
 
         let contribution: RawContribution = new RawContribution();
         contribution.name = contributionName;
@@ -139,18 +133,17 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
         console.log("close modal");
 
         this.doOpenAddContributionModal = false;
-        this.contributionInputFormGroup.reset();
+        this.inputFields.reset();
 
         this.doOpenEditContributionModal = false;
-        this.contributionEditInputFormGroup.reset();
-
+        this.editFields.reset();
     }
 
 
     editContribution() {
         console.log("editContribution");
 
-        let inputs = this.contributionEditInputFormGroup.controls as ContributionEdits;
+        let inputs = this.editFields.controls as ContributionEdits;
         let contributionName: string = inputs.contributionEditNameInputFormControlName.value;
         let contributionFactor: number = inputs.contributionEditFactorInputFormControlName.value;
         let resource: RawResource = inputs.contributionEditResourceInputFormControlName.value;
@@ -182,11 +175,11 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
         this.doOpenEditContributionModal = true;
         let editSelectedRow=this.selectedContributions[0];
 
-        let inputs = this.contributionEditInputFormGroup.controls as ContributionEdits;
+        let inputs = this.editFields.controls as ContributionEdits;
 
         inputs.contributionEditNameInputFormControlName.setValue(editSelectedRow.name);
         inputs.contributionEditFactorInputFormControlName.setValue(editSelectedRow.factor);
-        inputs.contributionEditResourceIdInputFormControlName.setValue(editSelectedRow.resourceId);
+        inputs.contributionEditResourceInputFormControlName.setValue(editSelectedRow.resourceId);
     }
 
     onDelete() {
@@ -204,7 +197,7 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
                 })
             ).subscribe(
             response => {
-                this.allResources = response;
+                this.resourceList = response;
             },
             (error) => {
                 console.log(error);
