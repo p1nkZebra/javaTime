@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {finalize, tap} from "rxjs/internal/operators";
+import {filter, finalize, tap} from "rxjs/internal/operators";
 import {AbstractControl, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {Dictionary} from "async";
 import {ContributionService} from "@app/service/contribution.service";
@@ -61,19 +61,37 @@ export class ContributionTableComponent implements OnInit, OnDestroy {
     updateTable() {
         this.contributionHttpService.getContributionTable()
             .pipe(
-                tap(() => {
-                    // do something before all actions
+                filter((data) => {
+                    console.log("pipe filter - 1", data);
+                    return true;
                 }),
+                tap(() => {
+                        console.log("pipe tap next - 2", this.allContributions);
+                    },
+                    () => {
+                        console.log("pipe: tap error ");
+                    },
+                    () => {
+                        console.log("pipe tap complete - 4", this.allContributions);
+                    }
+                ),
                 finalize(() => {
+                    console.log("pipe finalize - 6", this.allContributions);
                     // do something after all actions
                 })
             ).subscribe(
-            response => {
-                this.allContributions = response;
+            (data: RawContribution[]) => {
+                console.log("subscribe: next - 3", this.allContributions);
+                this.allContributions = data;
             },
             (error) => {
-                console.log(error);
-            });
+                console.log("subscribe: error");
+            },
+            () => {
+                console.log("subscribe: complete - 5", this.allContributions);
+
+            })
+        ;
     }
 
     onAdd() {
