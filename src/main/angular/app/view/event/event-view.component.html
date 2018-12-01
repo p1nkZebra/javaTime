@@ -1,17 +1,57 @@
 <div class="row">
+    <form clrForm class="col-lg-12" [formGroup]="filtersGroup">
+        <div class="row">
+            <div class="col-lg-3">
+                <clr-date-container class="date-container">
+                    <label>Дата с</label>
+                    <input clrDate
+                           type="date"
+                           formControlName="dateFromControl">
+                </clr-date-container>
+            </div>
+            <div class="col-lg-3">
+                <clr-date-container class="date-container">
+                    <label>Дата по</label>
+                    <input clrDate
+                           type="date"
+                           formControlName="dateToControl">
+                </clr-date-container>
+            </div>
+            <div class="col-lg-3">
+                <clr-select-container class="select-container">
+                    <label>Статус</label>
+                    <select clrSelect
+                            class="clr-select"
+                            formControlName="statusControl">
+                        <option [value]="status" *ngFor="let status of statuses">{{status}}</option>
+                    </select>
+                </clr-select-container>
+            </div>
+            <div class="col-lg-3">
+                <clr-input-container class="input-container">
+                    <label>Поиск</label>
+                    <input clrInput
+                           formControlName="stringSearchControl"/>
+                </clr-input-container>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row">
     <div class="col-lg-6">
 
     </div>
 
     <div class="col-lg-6">
-        <clr-datagrid >
+        <clr-datagrid>
             <clr-dg-column>Ресурс</clr-dg-column>
             <clr-dg-column>Сфера</clr-dg-column>
             <clr-dg-column>Событие</clr-dg-column>
             <clr-dg-column>Дата события</clr-dg-column>
             <clr-dg-column>Комментарий</clr-dg-column>
 
-            <clr-dg-row *clrDgItems="let event of allEventView">
+            <clr-dg-row *clrDgItems="let event of filteredEventView">
                 <clr-dg-cell>{{event.resourceName}}</clr-dg-cell>
                 <clr-dg-cell>{{event.contributionName}}</clr-dg-cell>
                 <clr-dg-cell>{{event.name}}</clr-dg-cell>
@@ -19,7 +59,7 @@
                 <clr-dg-cell>{{event.comment}}</clr-dg-cell>
             </clr-dg-row>
 
-            <clr-dg-footer>{{allEventView.length}} events</clr-dg-footer>
+            <clr-dg-footer>{{filteredEventView.length}} events</clr-dg-footer>
         </clr-datagrid>
     </div>
 </div>

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Rx";
 import {classToPlain, plainToClass} from "class-transformer";
 import {map} from "rxjs/internal/operators";
@@ -12,17 +12,6 @@ export class EventService {
     constructor(private http: HttpClient) {
     }
 
-    // getEventsByContribution(contributionId: number): Observable<UserEvent[]> {
-    //
-    //     let httpParams: HttpParams = new HttpParams();
-    //     httpParams = httpParams.append('contribution', contributionId.toString());
-    //
-    //     return this.http.get<UserEvent[]>("java-people/get-events", {params: httpParams} )
-    //         .pipe(
-    //             map(response => plainToClass(UserEvent, response as Object[])
-    //             )
-    //         );
-    // }
 
     getEventView(): Observable<EventView[]> {
         return this.http.get<EventView[]>("java-people/get-event-view")
@@ -38,5 +27,20 @@ export class EventService {
     }
 
 
+    getFilteredEventView(dateFrom: string, dateTo: string, status: string, searchString: string): Observable<EventView[]> {
 
+        let httpParams: HttpParams = new HttpParams();
+        httpParams = httpParams.append('dateFrom', dateFrom);
+        httpParams = httpParams.append('dateTo', dateTo);
+        httpParams = httpParams.append('status', status);
+        if (searchString !== null && searchString.trim().length > 0) {
+        httpParams = httpParams.append('searchString', searchString);
+        }
+
+        return this.http.get<EventView[]>("java-people/get-filtered-event-view", {params: httpParams} )
+            .pipe(
+                map(response => plainToClass(EventView, response as Object[])
+                )
+            );
+    }
 }

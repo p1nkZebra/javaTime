@@ -47,6 +47,36 @@ public class EventController {
     }
 
     @ResponseBody
+    @GetMapping(value = "get-filtered-event-view")
+    public String getEventsByFilters(
+            @RequestParam(value = "dateFrom", required = true) String dateFrom,
+            @RequestParam(value = "dateTo", required = true) String dateTo,
+            @RequestParam(value = "status", required = true) String status,
+            @RequestParam(value = "searchString", required = false) String searchString) {
+        log.info("Start get events by filters: dateFrom: {}, dateTo: {}, status: {}, searchString: {}",
+                dateFrom, dateTo, status, searchString);
+
+//        List<RawEventDto> records = eventService.findEventsByFilters(dateFrom, dateTo, status, searchString);
+
+        List<RawEventDto> records = eventService.findEventsByContributionId(1L);
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+
+            RawEventDto[] resourceArray = records.toArray(new RawEventDto[0]);
+
+            String jsonString = mapper.writeValueAsString(resourceArray);
+            log.info("URL \"get-filtered-event-view\" return json: {}", jsonString);
+
+            return jsonString;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    @ResponseBody
     @GetMapping(value = "get-event-view")
     public String getEventViews() {
         log.info("Start get-event-view.");
