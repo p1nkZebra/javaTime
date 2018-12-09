@@ -32,7 +32,7 @@ export class ResourceService {
 
 
 
-    addNewResource(resource: RawResource) {
+    addResource(resource: RawResource) {
         return this.http.post("java-people/save-new-resource", classToPlain(resource));
     }
 

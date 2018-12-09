@@ -5,13 +5,9 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup} from "@angular/for
 import {Dictionary} from "async";
 import {RawResource} from "@app/model/tables/rawResource";
 
-export interface ResourceInputs extends Dictionary<AbstractControl> {
-    resourceNameInputFormControlName: AbstractControl,
-    resourceCommentInputFormControlName: AbstractControl,
-}
-export interface ResourceEdits extends Dictionary<AbstractControl> {
-    resourceEditNameInputFormControlName: AbstractControl,
-    resourceEditCommentInputFormControlName: AbstractControl,
+export interface ResourceFields extends Dictionary<AbstractControl> {
+    nameControl: AbstractControl,
+    commentControl: AbstractControl,
 }
 
 @Component({
@@ -25,32 +21,23 @@ export class ResourceTableComponent implements OnInit, OnDestroy {
     allResources: RawResource[] = [];
     selectedResources: RawResource[] = [];
 
-    doOpenAddResourceModal: boolean = false;
-    doOpenEditResourceModal: boolean = false;
+    doOpenResourceModal: boolean = false;
+    modalTitle: string;
+    TITLE_ADD_NEW: string = "Add new Resource";
+    TITLE_EDIT: string = "Edit Resource";
 
+    fieldsFormGroup: FormGroup;
 
-    resourceInputFormGroup: FormGroup;
-    resourceNameInputFormControl: FormControl = new FormControl();
-    resourceCommentInputFormControl: FormControl = new FormControl();
-
-    resourceEditInputFormGroup : FormGroup;
-    resourceEditNameInputFormControl: FormControl = new FormControl();
-    resourceEditCommentInputFormControl: FormControl = new FormControl();
 
     constructor(private httpService: ResourceService,
-                private builder: FormBuilder
-    ) {
-        this.resourceInputFormGroup = this.builder.group({
-            resourceNameInputFormControlName: this.resourceNameInputFormControl,
-            resourceCommentInputFormControlName: this.resourceCommentInputFormControl,
-        } as ResourceInputs);
-        this.resourceEditInputFormGroup=this.builder.group({
-            resourceEditNameInputFormControlName: this.resourceEditNameInputFormControl,
-            resourceEditCommentInputFormControlName: this.resourceEditCommentInputFormControl,
-            }as ResourceEdits)
+                private builder: FormBuilder) {
     }
 
     ngOnInit() {
+        this.fieldsFormGroup = this.builder.group({
+            nameControl: new FormControl(),
+            commentControl: new FormControl(),
+        } as ResourceFields);
 
         this.updateTable();
     }
@@ -78,30 +65,31 @@ export class ResourceTableComponent implements OnInit, OnDestroy {
     }
 
     onAdd() {
-        console.log("open modal window");
-        this.doOpenAddResourceModal = true;
-
+        console.log("open modal");
+        this.doOpenResourceModal = true;
+        this.modalTitle = this.TITLE_ADD_NEW;
     }
 
+    onEdit() {
+        console.log("open modal");
+        this.doOpenResourceModal = true;
+        this.modalTitle = this.TITLE_EDIT;
 
-    saveNewResource() {
-        console.log("saveNewResource");
+        let selectedRow = this.selectedResources[0];
 
-        let inputs = this.resourceInputFormGroup.controls as ResourceInputs;
+        let inputs = this.fieldsFormGroup.controls as ResourceFields;
+        inputs.nameControl.setValue(selectedRow.name);
+        inputs.commentControl.setValue(selectedRow.comment);
+    }
 
-        let resourceName: string = inputs.resourceNameInputFormControlName.value;
-        let resourceComment: string = inputs.resourceCommentInputFormControlName.value;
-
-        if (resourceName.trim().length == 0) {
-            console.log("ERROR: empty value for resourceName");
-            return;
-        }
+    onSave() {
+        let inputs = this.fieldsFormGroup.controls as ResourceFields;
 
         let resource: RawResource = new RawResource();
-        resource.name = resourceName;
-        resource.comment = resourceComment;
+        resource.name = inputs.nameControl.value;
+        resource.comment = inputs.commentControl.value;
 
-        this.httpService.addNewResource(resource)
+        this.httpService.addResource(resource)
             .pipe(
                 tap(() => {
                     // do something before all actions
@@ -113,58 +101,10 @@ export class ResourceTableComponent implements OnInit, OnDestroy {
                 })
             ).subscribe();
     }
-
-
-
 
     closeModal() {
-        console.log("close modal");
-
-        this.doOpenAddResourceModal = false;
-        this.resourceInputFormGroup.reset();
-
-        this.doOpenEditResourceModal = false;
-        this.resourceEditInputFormGroup.reset();
-
-    }
-
-
-    editResource() {
-        console.log("editResource");
-
-        let inputs = this.resourceEditInputFormGroup.controls as ResourceEdits;
-        let resourceName: string = inputs.resourceEditNameInputFormControlName.value;
-        let resourceComment: string = inputs.resourceEditCommentInputFormControlName.value;
-
-        console.log("before",this.selectedResources[0]);
-
-        let resource: RawResource =this.selectedResources[0];
-        resource.name = resourceName;
-        resource.comment = resourceComment;
-
-        this.httpService.editResource(resource)
-            .pipe(
-                tap(() => {
-                    // do something before all actions
-                }),
-                finalize(() => {
-                    // do something after all actions
-                    this.closeModal();
-                    this.updateTable();
-                })
-            ).subscribe();
-
-
-    }
-
-    doEdit() {
-        this.doOpenEditResourceModal = true;
-        let editSelectedRow=this.selectedResources[0];
-
-        let inputs = this.resourceEditInputFormGroup.controls as ResourceEdits;
-
-        inputs.resourceEditNameInputFormControlName.setValue(editSelectedRow.name);
-        inputs.resourceEditCommentInputFormControlName.setValue(editSelectedRow.comment);
+        this.doOpenResourceModal = false;
+        this.fieldsFormGroup.reset();
     }
 
     onDelete() {

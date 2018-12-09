@@ -15,7 +15,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="cron_period" type="varchar(255)"/>
-            <column name="user_value" type="decimal(5,2)"/>
+            <column name="user_value" type="BIGINT"/>
         </addColumn>
     </changeSet>
 

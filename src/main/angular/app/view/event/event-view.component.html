@@ -49,6 +49,8 @@
             <clr-dg-column>Сфера</clr-dg-column>
             <clr-dg-column>Событие</clr-dg-column>
             <clr-dg-column>Дата события</clr-dg-column>
+            <clr-dg-column>Период</clr-dg-column>
+            <clr-dg-column>Коэффициент</clr-dg-column>
             <clr-dg-column>Комментарий</clr-dg-column>
 
             <clr-dg-row *clrDgItems="let event of filteredEventView">
@@ -56,6 +58,8 @@
                 <clr-dg-cell>{{event.contributionName}}</clr-dg-cell>
                 <clr-dg-cell>{{event.name}}</clr-dg-cell>
                 <clr-dg-cell>{{event.eventDate | date}}</clr-dg-cell>
+                <clr-dg-cell>{{event.cronPeriod}}</clr-dg-cell>
+                <clr-dg-cell>{{event.userValue}}</clr-dg-cell>
                 <clr-dg-cell>{{event.comment}}</clr-dg-cell>
             </clr-dg-row>
 

@@ -1,17 +1,15 @@
 package com.javaPeople.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javaPeople.controller.dto.EventViewDto;
 import com.javaPeople.controller.dto.RawEventDto;
+import com.javaPeople.domain.Event;
 import com.javaPeople.logic.service.EventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -23,32 +21,21 @@ public class EventController {
     private EventService eventService;
 
 
+
     @ResponseBody
     @GetMapping(value = "get-events")
-    public String getEventsByContribution(@RequestParam(value = "contribution", required = true) Long id) {
+    public ResponseEntity<List<RawEventDto>> getEventsByContribution(@RequestParam(value = "contribution", required = true) Long id) {
         log.info("Start get events.");
 
         List<RawEventDto> records = eventService.findEventsByContributionId(id);
 
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-
-            RawEventDto[] resourceArray = records.toArray(new RawEventDto[0]);
-
-            String jsonString = mapper.writeValueAsString(resourceArray);
-            log.info("URL \"get-events\" return json: {}", jsonString);
-
-            return jsonString;
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok(records);
     }
+
 
     @ResponseBody
     @GetMapping(value = "get-filtered-event-view")
-    public String getEventsByFilters(
+    public ResponseEntity<List<RawEventDto>> getEventsByFilters(
             @RequestParam(value = "dateFrom", required = true) String dateFrom,
             @RequestParam(value = "dateTo", required = true) String dateTo,
             @RequestParam(value = "status", required = true) String status,
@@ -60,90 +47,60 @@ public class EventController {
 
         List<RawEventDto> records = eventService.findEventsByContributionId(1L);
 
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-
-            RawEventDto[] resourceArray = records.toArray(new RawEventDto[0]);
-
-            String jsonString = mapper.writeValueAsString(resourceArray);
-            log.info("URL \"get-filtered-event-view\" return json: {}", jsonString);
-
-            return jsonString;
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok(records);
     }
+
 
     @ResponseBody
     @GetMapping(value = "get-event-view")
-    public String getEventViews() {
+    public ResponseEntity<List<EventViewDto>> getEventView() {
         log.info("Start get-event-view.");
 
         List<EventViewDto> eventViewDtos = eventService.getAllEventViewDtos();
 
-        EventViewDto[] eventViewDtosArray = eventViewDtos.toArray(new EventViewDto[0]);
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonString = mapper.writeValueAsString(eventViewDtosArray);
-            log.info("URL \"get-event-view\" return json: {}", jsonString);
-            return jsonString;
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok(eventViewDtos);
     }
 
 
     @ResponseBody
     @GetMapping(value = "get-all-events")
-    public String getAllEvents() {
+    public ResponseEntity<List<RawEventDto>> getAllEvents() {
         log.info("Start get all events.");
 
-        List<RawEventDto> records = eventService.getAllRawEventDto();
+        List<RawEventDto> rawEventDtoList = eventService.getAllRawEventDto();
 
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-
-            RawEventDto[] resourceArray = records.toArray(new RawEventDto[0]);
-
-            String jsonString = mapper.writeValueAsString(resourceArray);
-            log.info("URL \"get-all-events\" return json: {}", jsonString);
-
-            return jsonString;
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok(rawEventDtoList);
     }
+
 
     @ResponseBody
     @PostMapping(value = "delete-events")
-    public String deleteEvents(@RequestBody String json) {
-        log.info("Start delete events from json: {}.", json);
+    public ResponseEntity<String> deleteEvents(@RequestBody List<RawEventDto> eventDtoList) {
+        log.info("Start delete events from json: {}.", eventDtoList);
 
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            List<RawEventDto> eventDtoList = mapper.readValue(json, new TypeReference<List<RawEventDto>>() {
-            });
-
-            log.info("Events to delete:");
-            for (RawEventDto eventDto : eventDtoList) {
-                log.info("RawEventDto: {}", eventDto.toString());
-            }
-
-            eventService.deleteEvents(eventDtoList);
-
-
-            return "OK";
-
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            throw new RuntimeException(e);
-        }
+        eventService.deleteEvents(eventDtoList);
+        return ResponseEntity.ok("Delete status OK");
     }
+
+
+    @ResponseBody
+    @GetMapping(value = "get-event-table")
+    public ResponseEntity<List<Event>> getEventTable() {
+        log.info("Call get-event-table. get-all-event");
+
+        List<Event> eventList = eventService.findAllEvents();
+        return ResponseEntity.ok(eventList);
+    }
+
+
+    @ResponseBody
+    @PostMapping(value = "save-event")
+    public ResponseEntity<String> saveContribution(@RequestBody Event jsonEvent) {
+        log.info("Start save or edit Event from json: {}.", jsonEvent);
+
+        eventService.saveOrEditEvent(jsonEvent);
+        return ResponseEntity.ok("Status OK");
+    }
+
 
 }

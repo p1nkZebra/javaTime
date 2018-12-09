@@ -3,7 +3,9 @@ package com.javaPeople.logic.service;
 import com.javaPeople.controller.dto.EventViewDto;
 import com.javaPeople.controller.dto.RawEventDto;
 import com.javaPeople.controller.dto.converter.EventDtoConverter;
+import com.javaPeople.domain.Contribution;
 import com.javaPeople.domain.Event;
+import com.javaPeople.repository.ContributionRepository;
 import com.javaPeople.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private ContributionRepository contributionRepository;
     @Autowired
     private EventDtoConverter converter;
 
@@ -72,5 +76,17 @@ public class EventService {
         }
 
         return resultList;
+    }
+
+    public List<Event> findAllEvents() {
+        return eventRepository.findAll();
+    }
+
+    public void saveOrEditEvent(@NotNull Event event) {
+        Long contributionId = event.getContributionId();
+        Contribution contribution = contributionRepository.findById(contributionId)
+                .orElseThrow(() -> new RuntimeException("Contribution not fount. resourceId: " + contributionId));
+        event.setContribution(contribution);
+        eventRepository.save(event);
     }
 }

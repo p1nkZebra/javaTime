@@ -6,7 +6,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -50,5 +49,5 @@ public class Event {
     private String cronPeriod;
 
     @Column(name = "user_value")
-    private BigDecimal userValue;
+    private Long userValue;
 }

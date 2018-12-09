@@ -25,23 +25,23 @@
                     <button *ngIf="selectedContributions.length == 1"
                             type="button"
                             class="btn btn-sm btn-secondary"
-                            (click)="doEdit()">
+                            (click)="onEdit()">
                         <clr-icon shape="pencil"></clr-icon>
                         Edit
                     </button>
                 </div>
             </clr-dg-action-bar>
 
+            <clr-dg-column>Resource Id</clr-dg-column>
             <clr-dg-column>Contribution ID</clr-dg-column>
             <clr-dg-column>Name</clr-dg-column>
             <clr-dg-column>Factor</clr-dg-column>
-            <clr-dg-column>Resource Id</clr-dg-column>
 
             <clr-dg-row *clrDgItems="let contribution of allContributions" [clrDgItem]="contribution">
+                <clr-dg-cell>{{contribution.resourceId}}</clr-dg-cell>
                 <clr-dg-cell>{{contribution.id}}</clr-dg-cell>
                 <clr-dg-cell>{{contribution.name}}</clr-dg-cell>
                 <clr-dg-cell>{{contribution.factor}}</clr-dg-cell>
-                <clr-dg-cell>{{contribution.resourceId}}</clr-dg-cell>
             </clr-dg-row>
 
             <clr-dg-footer>{{allContributions.length}} contributions</clr-dg-footer>
@@ -65,7 +65,7 @@
                         <label>Resource name</label>
                         <select clrSelect required
                                 name="resourceName"
-                                formControlName="resourceNameFcn">
+                                formControlName="resourceNameControl">
                             <option [ngValue]="res" *ngFor="let res of resourceList">{{res.name}}</option>
                         </select>
                         <clr-control-error>This field is required!</clr-control-error>
@@ -76,7 +76,7 @@
                         <input clrInput required
                                placeholder=""
                                name="name"
-                               formControlName="nameFcn"/>
+                               formControlName="nameControl">
                         <clr-control-error>This field is required!</clr-control-error>
                     </clr-input-container>
 
@@ -85,7 +85,7 @@
                         <input clrInput required
                                placeholder=""
                                name="factor"
-                               formControlName="factorFcn"/>
+                               formControlName="factorControl">
                         <clr-control-error>This field is required!</clr-control-error>
                     </clr-input-container>
 
@@ -99,7 +99,7 @@
 
                 <button type="button"
                         class="btn btn-primary"
-                        (click)="doSave()">Save
+                        (click)="save()">Save
                 </button>
             </div>
         </div>

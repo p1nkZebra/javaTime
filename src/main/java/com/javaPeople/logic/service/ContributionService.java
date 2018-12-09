@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ContributionService {
@@ -24,21 +23,16 @@ public class ContributionService {
     private ContributionDtoConverter converter;
 
 
-
     public List<Contribution> findAllContributions() {
         return contributionRepository.findAll();
     }
 
     public void saveOrEditContribution(@NotNull Contribution contribution) {
         Long resourceId = contribution.getResourceId();
-        Optional<CircleResource> resourceOptional = circleResourceRepository.findById(resourceId);
-        if (resourceOptional.isPresent()) {
-            CircleResource resource = resourceOptional.get();
-            contribution.setResource(resource);
-            contributionRepository.save(contribution);
-        } else {
-            throw new RuntimeException("CircleResource not fount. resourceId: " + resourceId);
-        }
+        CircleResource resource = circleResourceRepository.findById(resourceId)
+                .orElseThrow(() -> new RuntimeException("CircleResource not fount. resourceId: " + resourceId));
+        contribution.setResource(resource);
+        contributionRepository.save(contribution);
     }
 
     @NotNull
@@ -46,7 +40,7 @@ public class ContributionService {
         List<ContributionViewDto> resultList = new ArrayList<>();
 
         List<Contribution> contributions = contributionRepository.findAll();
-        for ( Contribution contribution : contributions ) {
+        for (Contribution contribution : contributions) {
             resultList.add(converter.convertContributionToContributionViewDto(contribution));
         }
 

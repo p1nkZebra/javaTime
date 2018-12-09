@@ -25,8 +25,6 @@ export class ResourceViewComponent implements OnInit, OnDestroy {
     }
 
     updateTable() {
-        console.log("downloadResources");
-
         this.httpService.getResourceView()
             .pipe(
                 tap(() => {

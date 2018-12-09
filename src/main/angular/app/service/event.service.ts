@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Rx";
 import {classToPlain, plainToClass} from "class-transformer";
-import {map} from "rxjs/internal/operators";
+import {catchError, map} from "rxjs/internal/operators";
 import {EventView} from "@app/model/view/eventView";
 import {RawEvent} from "@app/model/tables/rawEvent";
 
@@ -42,5 +42,36 @@ export class EventService {
                 map(response => plainToClass(EventView, response as Object[])
                 )
             );
+    }
+
+    getEventTable(): Observable<RawEvent[]>  {
+        let operation: string = 'getEventTable';
+        let url: string = "java-people/get-event-table";
+
+        return this.http.get<RawEvent[]>(url)
+            .pipe(
+                map(response => plainToClass(RawEvent, response as Object[])),
+                catchError(this.handleError(operation, url))
+            );
+    }
+
+    addEvent(event: RawEvent) {
+        console.log(event);
+        console.log(classToPlain(event));
+        return this.http.post("java-people/save-event", classToPlain(event));
+    }
+
+    private handleError(operation: String, url: string) {
+        return (err: any) => {
+            let errMsg = `error in ${operation}() retrieving ${url}`;
+            console.log(`${errMsg}:`, err);
+
+            if(err instanceof HttpErrorResponse) {
+                // you could extract more info about the error if you want, e.g.:
+                console.log(`status: ${err.status}, ${err.statusText}`);
+                // errMsg = ...
+            }
+            return Observable.throwError(errMsg);
+        }
     }
 }
